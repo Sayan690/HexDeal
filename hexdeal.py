@@ -4,27 +4,27 @@
 
 Absolute no dealing with hexadecimal to integer absolute values. We have int() in python for that
 
-hexdeal hex "Hello World!"
+hexdeal hex 'Hello World!'
 -> 0x48656c6c6f20576f726c6421
 
-hexdeal hex "Hello World!" -rev
--> 0x1246c627f67502f6c6c65684
+hexdeal hex 'Hello World!' -rev
+-> 0x21646c726f57206f6c6c6548
 
-hexdeal hex "Hello World!" -rev -cut 4 -comment -comment-symbol ";" -rev-bytes
--> 0x1246c627 ; !dlr
-   0xf67502f6 ; oW o
-   0xc6c65684 ; lleH
+hexdeal hex 'Hello World!' -rev -cut 4 -comment -comment-symbol ";"
+-> 0x21646c72 ; !dlr
+	0x6f57206f ; oW o
+	0x6c6c6548 ; lleH
 
 hexdeal unhex "0x48656c6c6f20576f726c6421"
 -> Hello World!
 
-hexdeal unhex "1246c627f67502f6c6c65684" -rev
+hexdeal unhex "21646c726f57206f6c6c6548" -rev
 -> Hello World!
 
-hexdeal edit "0x1246c627f67502f6c6c65684" -cut 4 -no-prefix
--> 1246c627
-   f67502f6
-   c6c65684
+hexdeal edit "0x21646c726f57206f6c6c6548" -cut 4 -no-prefix
+-> 21646c72
+	6f57206f
+	6c6c6548
 
 '''
 
@@ -64,13 +64,12 @@ class HexDeal:
 			for i in range(len(self.data)-1, 0, -2):
 				c += self.data[i-1] + self.data[i]
 			self.data = c
+			print(self.data)
 
 		self.data = self.to_char(self.data)
 		self.edit()
 
 	def edit(self):
-		# self.data = 63616c632e657865
-
 		out = [self.data]
 
 		# Cut
@@ -82,7 +81,7 @@ class HexDeal:
 		newout = []
 		for x in out:
 			# Deal with reversed character bytes
-			if self.args.rev:
+			if self.args.rev and self.args.mode != "unhex":
 				c = ""
 				for i in range(len(x)-1, 0, -2):
 					c += x[i-1] + x[i]
@@ -94,7 +93,6 @@ class HexDeal:
 				x = f"{x} {self.args.cs} {string}"
 
 			newout.append(x)
-
 		if self.args.rev:
 			newout = list(reversed(newout))
 
